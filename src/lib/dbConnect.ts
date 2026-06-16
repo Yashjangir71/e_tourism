@@ -1,4 +1,3 @@
-import { log } from "console";
 import mongoose from "mongoose";
 
 type ConnectionObject = {
@@ -15,16 +14,16 @@ async function dbConnect(): Promise<void>{
     }
 
     try {
-        const db = await mongoose.connect(`${process.env.MONGODB_URI}/etourism` || '', {})
-
-        connection.isConnected = db.connections[0].readyState
-
+        const uri = process.env.MONGODB_URI;
+        if (!uri) {
+            throw new Error("MONGODB_URI not set");
+        }
+        const db = await mongoose.connect(uri, { serverSelectionTimeoutMS: 8000 });
+        connection.isConnected = db.connections[0].readyState;
         console.log("db connected successfully");
-        
     } catch (error:any) {
         console.log("db connection failed", error);
-        
-        process.exit(1)
+        throw new Error(`Database connection failed: ${error.message}`);
     }
 }
 

@@ -5,7 +5,18 @@ import bcrypt from "bcryptjs";
 import { sendTouristVerificationEmail } from "@/helpers/sendTouristVerificationEmail";
 
 export async function POST(request: Request) {
-  await dbConnect();
+  try {
+    await dbConnect();
+  } catch (dbError: any) {
+    console.error("Database connection error:", dbError);
+    return Response.json(
+      {
+        success: false,
+        message: "Unable to connect to database. Please check your internet connection or try again later.",
+      },
+      { status: 503 }
+    );
+  }
 
   try {
     const { username, name, email, phone, description, companyName, website, password } = await request.json();

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -8,7 +8,7 @@ import axios from 'axios'
 
 const categories = ['adventure', 'culture', 'relaxation', 'wildlife', 'historical']
 
-export default function SelectPreferencesPage() {
+function SelectPreferencesContent() {
   const [selected, setSelected] = useState<string[]>([])
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -64,5 +64,13 @@ export default function SelectPreferencesPage() {
         </Button>
       </div>
     </div>
+  )
+}
+
+export default function SelectPreferencesPage() {
+  return (
+    <Suspense fallback={null}>
+      <SelectPreferencesContent />
+    </Suspense>
   )
 }
